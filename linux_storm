@@ -1,0 +1,27 @@
+启动storm
+nohup sh $STORM_HOME/bin/storm dev-zookeeper &
+nohup sh $STORM_HOME/bin/storm nimbus &
+nohup sh $STORM_HOME/bin/storm ui &
+nohup sh $STORM_HOME/bin/storm supervisor &
+nohup sh $STORM_HOME/bin/storm logviewer &
+nohup sh $STORM_HOME/bin/storm drpc & #启动drpc
+
+storm如何运行自己开发的应用程序
+storm jar /root/lib/storm-learning-1.0-SNAPSHOT.jar \
+site.it4u.bigdata.ClusterSumShuffleGroupingStormTopology
+
+storm命令：
+storm list 查看当前正在运行的topology
+storm kill ClusterSumStormTopology 杀掉一个topology
+
+并行度：
+一个worker进程执行的是一个topology的子集
+一个worker进程会启动1..n个executor线程来执行一个topology的component
+一个运行的topology就是由集群中多台物理机上的多个worker进程组成
+executor是一个被worker进程启动的单独线程，每一个executor只会运行一个topology的一个component
+task是最终运行spout或者bolt代码的最小执行单元
+默认：
+每一个supervisor节点最多启动4个worker进程
+每一个topology默认占用一个worker进程
+每一个worker进程会启动一个executor
+每一个executor启动一个task
